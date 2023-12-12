@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DataFragment">
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/temperatureSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:checked="true"
+        android:text="Receive Temperature Data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/humiditySwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="Receive Humidity Data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureSwitch" />
+
+    <Button
+        android:id="@+id/showChartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Show Chart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.539"
+        app:layout_constraintStart_toEndOf="@+id/ledControlButton" />
+
+    <Button
+        android:id="@+id/ledControlButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="Turn On/Off LED"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/temperatureTextView"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/getDataButton"
+        app:layout_constraintVertical_bias="0.119" />
+
+    <Button
+        android:id="@+id/getDataButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/humidityTextView"
+        android:layout_marginTop="52dp"
+        android:text="Get Data"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/humiditySeekBar" />
+
+    <TextView
+        android:id="@+id/humidityTextView"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/temperatureTextView"
+        android:layout_marginTop="36dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/temperatureTextView"
+        app:layout_constraintHorizontal_bias="0.774"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/getDataButton"
+        app:layout_constraintVertical_bias="0.007" />
+
+    <!-- Humidity Threshold SeekBar -->
+
+    <TextView
+        android:id="@+id/temperatureLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Temperature Threshold"
+        app:layout_constraintTop_toBottomOf="@+id/humiditySwitch"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <SeekBar
+        android:id="@+id/temperatureSeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temperatureLabel"
+        android:max="120"
+        android:progress="90"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureLabel"
+        tools:layout_editor_absoluteX="16dp" />
+
+    <TextView
+        android:id="@+id/temperatureSeekBarValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/humiditySeekBar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="50°C"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.032"
+        app:layout_constraintStart_toEndOf="@+id/temperatureLabel"
+        app:layout_constraintTop_toBottomOf="@+id/humiditySwitch" />
+
+    <TextView
+        android:id="@+id/humidityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/temperatureSeekBar"
+        android:text="Humidity Threshold"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureSeekBar"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <SeekBar
+        android:id="@+id/humiditySeekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/humidityLabel"
+        android:max="100"
+        android:progress="80"
+        app:layout_constraintTop_toBottomOf="@+id/humidityLabel"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/humiditySeekBarValueTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/humiditySeekBar"
+        android:layout_centerHorizontal="true"
+        android:text="80%"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.029"
+        app:layout_constraintStart_toEndOf="@+id/humidityLabel"
+        app:layout_constraintTop_toBottomOf="@+id/temperatureSeekBar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
