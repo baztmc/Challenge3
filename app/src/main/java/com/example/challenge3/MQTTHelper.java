@@ -2,12 +2,7 @@ package com.example.challenge3;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.TextView;
 
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.challenge3.data.HumidityDataViewModel;
-import com.example.challenge3.data.TemperatureDataViewModel;
 import com.example.challenge3.db.DataOpenHelper;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -23,9 +18,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 
 public class MQTTHelper {
-
-    //private TemperatureDataViewModel temperatureVM;
-    //private HumidityDataViewModel humidityVM;
 
     private DataOpenHelper dbHelper;
 
@@ -59,12 +51,8 @@ public class MQTTHelper {
     public MQTTHelper(Context context, String name, String topic) {
         this.name = name;
 
-        //this.temperatureVM = temperatureVM;
-        //this.humidityVM = humidityVM;
-
         mqttAndroidClient = new MqttAndroidClient(context, server, name);
 
-        //todo
         dbHelper= new DataOpenHelper(context);
 
     }
@@ -129,17 +117,11 @@ public class MQTTHelper {
 
                             if (topic.equals("baz/temperature")) {
                                 System.out.println("temp: " + message.toString());
-                                //temperatureVM.addTemperatureData(message.toString());
-                                //temp.setText(message.toString());
-                                //todo
                                 dbHelper.insertTemperature(message.toString());
                             }
 
                             if (topic.equals("baz/humidity")) {
                                 System.out.println("hum: " + message.toString());
-                                //humidityVM.addHumidityData(message.toString());
-                                //hum.setText(message.toString());
-                                //todo
                                 dbHelper.insertHumidity(message.toString());
                             }
 

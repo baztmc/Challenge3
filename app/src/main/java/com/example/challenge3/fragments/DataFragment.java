@@ -19,8 +19,6 @@ import android.widget.Toast;
 
 import com.example.challenge3.MQTTHelper;
 import com.example.challenge3.R;
-import com.example.challenge3.data.HumidityDataViewModel;
-import com.example.challenge3.data.TemperatureDataViewModel;
 import com.example.challenge3.db.DataOpenHelper;
 
 import java.util.UUID;
@@ -32,8 +30,6 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     }
 
     private MQTTHelper mqttHelper;
-    //private TemperatureDataViewModel temperatureVM;
-    //private HumidityDataViewModel humidityVM;
     private SwitchCompat temperatureSwitch,humiditySwitch;
     private TextView temperatureTextView, humidityTextView, temperatureSeekBarValueTextView, humiditySeekBarValueTextView;
     private Button ledButton, getDataButton, showChartButton;
@@ -47,12 +43,6 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //temperatureVM = new ViewModelProvider(requireActivity()).get(TemperatureDataViewModel.class);
-        //humidityVM = new ViewModelProvider(requireActivity()).get(HumidityDataViewModel.class);
-
-
-
 
     }
 
@@ -68,7 +58,6 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
         mqttHelper.connect();
         //mqttHelper.publishLedControl("ON");
 
-        //todo
         dbHelper = new DataOpenHelper(getContext());
 
         ledButton = view.findViewById(R.id.ledControlButton);
@@ -167,9 +156,7 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
 
 
     private void displayReceivedData() {
-        //String temperatureData = temperatureVM.getLastTemperature();
         String temperatureData = dbHelper.getLastTemperatureValue();
-        //String humidityData = humidityVM.getLastHumidity();
         String humidityData = dbHelper.getLastHumidityValue();
 
 
@@ -237,7 +224,7 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     /*@Override
     public void onConnect() {
         // Connection successful, now you can publish messages
-        temperatureVM.print();
+
     }
 
     @Override

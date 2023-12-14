@@ -68,15 +68,11 @@ public class DataOpenHelper extends SQLiteOpenHelper {
         }
 
 
-        System.out.println("lasttempfromdb: " + lastTemperatureValue);
         // Close the cursor and database
         cursor.close();
         db.close();
 
         return lastTemperatureValue;
-        /*System.out.println("lasttempfromdb: " + db.rawQuery(query, null));
-        // Execute the query
-        return db.rawQuery(query, null);*/
     }
 
     public String getLastHumidityValue() {
