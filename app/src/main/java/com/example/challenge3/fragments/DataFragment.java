@@ -1,5 +1,6 @@
 package com.example.challenge3.fragments;
 
+
 import android.content.Context;
 import android.os.Bundle;
 
@@ -20,6 +21,9 @@ import com.example.challenge3.MQTTHelper;
 import com.example.challenge3.R;
 import com.example.challenge3.data.HumidityDataViewModel;
 import com.example.challenge3.data.TemperatureDataViewModel;
+import com.example.challenge3.db.DataOpenHelper;
+
+import java.util.UUID;
 
 
 public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCallback*/ {
@@ -28,14 +32,15 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     }
 
     private MQTTHelper mqttHelper;
-    private TemperatureDataViewModel temperatureVM;
-    private HumidityDataViewModel humidityVM;
+    //private TemperatureDataViewModel temperatureVM;
+    //private HumidityDataViewModel humidityVM;
     private SwitchCompat temperatureSwitch,humiditySwitch;
     private TextView temperatureTextView, humidityTextView, temperatureSeekBarValueTextView, humiditySeekBarValueTextView;
     private Button ledButton, getDataButton, showChartButton;
     private OnNextButtonClick onNextButtonClickListener;
-    private double temperatureThreshold, humidityThreshold;
+    private double temperatureThreshold = 50, humidityThreshold = 80;
     private SeekBar temperatureSeekBar, humiditySeekBar;
+    private DataOpenHelper dbHelper;
 
     public DataFragment() {}
 
@@ -43,8 +48,11 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        temperatureVM = new ViewModelProvider(requireActivity()).get(TemperatureDataViewModel.class);
-        humidityVM = new ViewModelProvider(requireActivity()).get(HumidityDataViewModel.class);
+        //temperatureVM = new ViewModelProvider(requireActivity()).get(TemperatureDataViewModel.class);
+        //humidityVM = new ViewModelProvider(requireActivity()).get(HumidityDataViewModel.class);
+
+
+
 
     }
 
@@ -55,10 +63,13 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
         View view = inflater.inflate(R.layout.fragment_data, container, false);
 
 
-        mqttHelper = new MQTTHelper(getContext(), "test", "", temperatureVM, humidityVM);
+        mqttHelper = new MQTTHelper(getContext(), UUID.randomUUID().toString(), "");
         //mqttHelper.setConnectionCallback(this);
         mqttHelper.connect();
         //mqttHelper.publishLedControl("ON");
+
+        //todo
+        dbHelper = new DataOpenHelper(getContext());
 
         ledButton = view.findViewById(R.id.ledControlButton);
         getDataButton = view.findViewById(R.id.getDataButton);
@@ -156,36 +167,47 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
 
 
     private void displayReceivedData() {
-        String temperatureData = temperatureVM.getLastTemperature();
-        String humidityData = humidityVM.getLastHumidity();
+        //String temperatureData = temperatureVM.getLastTemperature();
+        String temperatureData = dbHelper.getLastTemperatureValue();
+        //String humidityData = humidityVM.getLastHumidity();
+        String humidityData = dbHelper.getLastHumidityValue();
 
 
         if (temperatureSwitch.isChecked() && !humiditySwitch.isChecked()) {
             // Display only temperature data
             temperatureTextView.setText("Temperature: " + temperatureData);
             humidityTextView.setText("");
+
+            if(Double.parseDouble(temperatureData) > temperatureThreshold){
+                Toast.makeText(requireContext(), "Temperature is too high", Toast.LENGTH_LONG).show();
+            }
         } else if (!temperatureSwitch.isChecked() && humiditySwitch.isChecked()) {
             // Display only humidity data
             temperatureTextView.setText("");
             humidityTextView.setText("Humidity: " + humidityData);
+
+            if(Double.parseDouble(humidityData) > humidityThreshold){
+                Toast.makeText(requireContext(), "Humidity is too high", Toast.LENGTH_LONG).show();
+            }
         } else if (temperatureSwitch.isChecked() && humiditySwitch.isChecked()) {
             // Display both temperature and humidity data
             temperatureTextView.setText("Temperature: " + temperatureData);
             humidityTextView.setText("Humidity: " + humidityData);
+
+            if(Double.parseDouble(temperatureData) > temperatureThreshold){
+                Toast.makeText(requireContext(), "Temperature is too high", Toast.LENGTH_LONG).show();
+            }
+            if(Double.parseDouble(humidityData) > humidityThreshold){
+                Toast.makeText(requireContext(), "Humidity is too high", Toast.LENGTH_LONG).show();
+            }
         } else {
             // Both switches are off
             temperatureTextView.setText("");
             humidityTextView.setText("");
         }
 
-        if(Double.parseDouble(temperatureData) > temperatureThreshold){
-            //todo handle threshold, send notification
-            Toast.makeText(requireContext(), "Temperature is too high", Toast.LENGTH_LONG).show();
-        }
-        if(Double.parseDouble(humidityData) > humidityThreshold){
-            //todo handle threshold, send notification
-            Toast.makeText(requireContext(), "Humidity is too high", Toast.LENGTH_LONG).show();
-        }
+
+
 
     }
 
@@ -203,7 +225,13 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
     @Override
     public void onDetach(){
         super.onDetach();
-        onNextButtonClickListener=null;
+        onNextButtonClickListener = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mqttHelper.stop();
     }
 
     /*@Override

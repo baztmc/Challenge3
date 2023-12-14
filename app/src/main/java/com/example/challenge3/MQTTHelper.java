@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.challenge3.data.HumidityDataViewModel;
 import com.example.challenge3.data.TemperatureDataViewModel;
+import com.example.challenge3.db.DataOpenHelper;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -23,8 +24,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTHelper {
 
-    private TemperatureDataViewModel temperatureVM;
-    private HumidityDataViewModel humidityVM;
+    //private TemperatureDataViewModel temperatureVM;
+    //private HumidityDataViewModel humidityVM;
+
+    private DataOpenHelper dbHelper;
 
     public MqttAndroidClient mqttAndroidClient;
 
@@ -53,13 +56,17 @@ public class MQTTHelper {
     }
 
 
-    public MQTTHelper(Context context, String name, String topic,  TemperatureDataViewModel temperatureVM, HumidityDataViewModel humidityVM) {
+    public MQTTHelper(Context context, String name, String topic) {
         this.name = name;
 
-        this.temperatureVM = temperatureVM;
-        this.humidityVM = humidityVM;
+        //this.temperatureVM = temperatureVM;
+        //this.humidityVM = humidityVM;
 
         mqttAndroidClient = new MqttAndroidClient(context, server, name);
+
+        //todo
+        dbHelper= new DataOpenHelper(context);
+
     }
 
     public void setCallback(MqttCallbackExtended callback) {
@@ -70,6 +77,8 @@ public class MQTTHelper {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(true);
+
+
 
         try {
 
@@ -120,14 +129,18 @@ public class MQTTHelper {
 
                             if (topic.equals("baz/temperature")) {
                                 System.out.println("temp: " + message.toString());
-                                temperatureVM.addTemperatureData(message.toString());
+                                //temperatureVM.addTemperatureData(message.toString());
                                 //temp.setText(message.toString());
+                                //todo
+                                dbHelper.insertTemperature(message.toString());
                             }
 
                             if (topic.equals("baz/humidity")) {
                                 System.out.println("hum: " + message.toString());
-                                humidityVM.addHumidityData(message.toString());
+                                //humidityVM.addHumidityData(message.toString());
                                 //hum.setText(message.toString());
+                                //todo
+                                dbHelper.insertHumidity(message.toString());
                             }
 
                             if (topic.equals("baz/led/status")) {
