@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,8 @@ import android.widget.Toast;
 import com.example.challenge3.MQTTHelper;
 import com.example.challenge3.R;
 import com.example.challenge3.db.DataOpenHelper;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.UUID;
 
@@ -85,11 +86,19 @@ public class DataFragment extends Fragment /*implements MQTTHelper.ConnectionCal
         });
 
 
+        // Check if any message is arrived
+        mqttHelper.setMessageArrivedCallback(new MQTTHelper.MessageArrivedCallback() {
+            @Override
+            public void onMessageArrived(String topic, MqttMessage message) {
+                getDataButton.setEnabled(true);
+            }
+        });
+
         // Set listener for the getDataButton
         getDataButton.setOnClickListener(v -> {
-
             displayReceivedData();
         });
+
 
         showChartButton.setOnClickListener(v -> {
             if(onNextButtonClickListener != null){

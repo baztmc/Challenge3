@@ -114,4 +114,45 @@ public class DataOpenHelper extends SQLiteOpenHelper {
         values.put(COLUMN_VALUE, value);
         return db.insert(TABLE_HUMIDITY, null, values);
     }
+
+    public Cursor getLast24HoursTemperatureValues() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Calculate the timestamp for 24 hours ago
+        long currentTime = System.currentTimeMillis();
+        long twentyFourHoursAgo = currentTime - (24 * 60 * 60 * 1000); // 24 hours in milliseconds
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS", Locale.getDefault());
+        String str = dateFormat.format(new Date(twentyFourHoursAgo));
+
+        // Define the query to get the last 24 hours of temperature values
+        String query = "SELECT * FROM " + TABLE_TEMPERATURE +
+                " WHERE datetime(" + COLUMN_TIMESTAMP + ") >= datetime('" +
+                str + "') ORDER BY datetime(" +
+                COLUMN_TIMESTAMP + ") ASC";
+
+        // Execute the query
+        return db.rawQuery(query, null);
+    }
+
+
+    public Cursor getLast24HoursHumidityValues() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        // Calculate the timestamp for 24 hours ago
+        long currentTime = System.currentTimeMillis();
+        long twentyFourHoursAgo = currentTime - (24 * 60 * 60 * 1000); // 24 hours in milliseconds
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS", Locale.getDefault());
+        String str = dateFormat.format(new Date(twentyFourHoursAgo));
+
+        // Define the query to get the last 24 hours of temperature values
+        String query = "SELECT * FROM " + TABLE_HUMIDITY +
+                " WHERE datetime(" + COLUMN_TIMESTAMP + ") >= datetime('" +
+                str + "') ORDER BY datetime(" +
+                COLUMN_TIMESTAMP + ") ASC";
+
+        // Execute the query
+        return db.rawQuery(query, null);
+    }
 }

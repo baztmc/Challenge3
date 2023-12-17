@@ -19,10 +19,14 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class MQTTHelper {
 
+    public interface MessageArrivedCallback {
+        void onMessageArrived(String topic, MqttMessage message);
+    }
+
+
     private DataOpenHelper dbHelper;
-
+    private MessageArrivedCallback messageArrivedCallback;
     public MqttAndroidClient mqttAndroidClient;
-
     //final String server = "tcp://2.80.198.184:1883";
     final String server = "tcp://broker.hivemq.com:1883";
     final String TAG = "MQTT";
@@ -46,6 +50,10 @@ public class MQTTHelper {
     public void setLastLedStatus(boolean status) {
         lastLedStatus = status;
     }
+    public void setMessageArrivedCallback(MessageArrivedCallback callback) {
+        this.messageArrivedCallback = callback;
+    }
+
 
 
     public MQTTHelper(Context context, String name, String topic) {
@@ -114,6 +122,10 @@ public class MQTTHelper {
                         @Override
                         public void messageArrived(String topic, MqttMessage message) throws Exception {
                             Log.d("file", message.toString());
+
+                            if (messageArrivedCallback != null) {
+                                messageArrivedCallback.onMessageArrived(topic, message);
+                            }
 
                             if (topic.equals("baz/temperature")) {
                                 System.out.println("temp: " + message.toString());
